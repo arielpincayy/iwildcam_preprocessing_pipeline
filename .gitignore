@@ -1,0 +1,6 @@
+.venv
+Fotos
+crops_clahe_processed
+*/__pycache__
+resultados_megadetector.json
+models/*
