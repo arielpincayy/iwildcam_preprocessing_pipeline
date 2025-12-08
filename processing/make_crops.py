@@ -202,6 +202,3 @@ def make_crops(json_file, input_folder, output_folder,
     print(f"Mediana usada: {target_w}x{target_h} px")
     print(f"Recortes generados: {crops_count}")
     print(f"Errores: {errors}")
-
-# Para ejecutar:
-# make_smart_crops('tu_json.json', 'carpeta_imagenes', 'carpeta_salida')

@@ -1,10 +1,11 @@
+from processing.auto_cluster_dl import auto_cluster_dl_hdbscan
 from processing.clahe import chalhe_images
 from processing.make_crops import make_crops
-from processing.auto_cluster_cnn import auto_cluster_dl_hdbscan 
 from processing.megadetector_step import megadetector_classify
 from processing.divide import divide_images
 from processing.remove_footer import remove_footer
 import os
+import shutil
 
 # --- CONFIGURACIÓN ---
 PATH = os.getcwd()
@@ -21,7 +22,6 @@ ANIMALS_FOLDER = 'Animales'
 EMPTY_FOLDER = 'Vacias'
 
 path_animales_img = os.path.join(SORTED_DIR, ANIMALS_FOLDER)
-path_crops_raw = os.path.join(CROPS_RAW_DIR, ANIMALS_FOLDER)
 
 # --- PIPELINE ---
 
@@ -59,24 +59,30 @@ divide_images(
     accepted_categories=['1']
 )
 
+shutil.rmtree(IMAGES)
+
 # 3. MAKE CROPS
 print("\n--- Paso 3: Recortes (Crops) ---")
 
 make_crops(
     json_file='resultados_megadetector.json',
     input_folder=path_animales_img,
-    output_folder=path_crops_raw,
+    output_folder=CROPS_RAW_DIR,
     conf_threshold=0.4,
     accepted_categories=['1']
 )
+
+shutil.rmtree(SORTED_DIR)
 
 # 4. CLAHE
 print("\n--- Paso 4: CLAHE ---")
 
 chalhe_images(
-    input_dir=path_crops_raw,
+    input_dir=CROPS_RAW_DIR,
     output_dir=CROPS_CLAHE_DIR
 )
+
+shutil.rmtree(CROPS_RAW_DIR)
 
 # 5. AUTO CLUSTER (RESNET)
 print("\n--- Paso 5: Clustering con ResNet50 + UMAP ---")

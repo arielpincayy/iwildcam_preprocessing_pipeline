@@ -2,7 +2,7 @@ import os
 import shutil
 import numpy as np
 import umap
-import hdbscan  # <--- IMPORTANTE: Nueva librería
+import hdbscan
 from tqdm import tqdm
 import json
 
@@ -14,8 +14,9 @@ def auto_cluster_dl_hdbscan(
     temp_features_file='temp_features.npy',
     temp_filenames_file='temp_filenames.json',
     batch_size=32,
-    min_cluster_size=15, # <--- Nuevo parámetro clave: tamaño mínimo de un grupo
-    min_samples=None     # <--- Controla cuán conservador es (más alto = más ruido detectado)
+    min_cluster_size=15,
+    min_samples=None,
+    n_neighborsumap=15
 ):
     """
     Pipeline: ResNet50 -> UMAP -> HDBSCAN -> File Sorting
@@ -51,7 +52,7 @@ def auto_cluster_dl_hdbscan(
     # NOTA: Para HDBSCAN, es mejor bajar a pocas dimensiones (ej. 10 a 50).
     # 400 dimensiones es demasiado disperso para calcular densidades correctamente.
     reducer = umap.UMAP(
-        n_neighbors=15,    # Balance entre estructura local y global
+        n_neighbors=n_neighborsumap,    # Balance entre estructura local y global
         n_components=15,   # <--- CAMBIO: Bajamos a 15 dimensiones para que HDBSCAN funcione bien
         metric='cosine',   
         min_dist=0.0,      # Compactar los puntos ayuda a HDBSCAN
@@ -61,7 +62,6 @@ def auto_cluster_dl_hdbscan(
     print(f"Dimensiones reducidas con UMAP: {embedding.shape}")
 
     # --- 3. CLUSTERING CON HDBSCAN ---
-    # Ya no hay bucle de Silhouette. HDBSCAN encuentra la densidad automáticamente.
     print(f"--- Paso 3: Clustering con HDBSCAN (min_cluster_size={min_cluster_size}) ---")
     
     clusterer = hdbscan.HDBSCAN(
@@ -94,7 +94,7 @@ def auto_cluster_dl_hdbscan(
         
         # Lógica especial para el ruido
         if label == -1:
-            folder_name = "Cluster_Ruido_Outliers" # <--- Aquí van tus falsos positivos raros
+            folder_name = "Cluster_Ruido_Outliers"
         else:
             folder_name = f"Cluster_{label:02d}"
         
