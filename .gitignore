@@ -5,3 +5,6 @@ crops_clahe_processed
 resultados_megadetector.json
 models/*
 dataset
+*.jpg
+*.png
+*.jpeg
