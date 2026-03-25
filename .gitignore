@@ -8,3 +8,5 @@ dataset
 *.jpg
 *.png
 *.jpeg
+*.npy
+*.json

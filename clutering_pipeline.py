@@ -9,7 +9,7 @@ import shutil
 
 # --- CONFIGURACIÓN ---
 PATH = os.getcwd()
-SRC_IMAGES = os.path.join(PATH, 'Fotos')  # Carpeta de imágenes originales
+SRC_IMAGES = os.path.join(PATH, 'dataset_ecuador')
 IMAGES = os.path.join(PATH, 'images')
 # Carpetas intermedias
 SORTED_DIR = os.path.join(PATH, 'images_sorted')

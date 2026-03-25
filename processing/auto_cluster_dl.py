@@ -114,3 +114,5 @@ def auto_cluster_dl_hdbscan(
     sorted_keys = sorted(conteo.keys())
     for k in sorted_keys:
         print(f"{k}: {conteo[k]} imágenes")
+
+    return clusterer, embedding
