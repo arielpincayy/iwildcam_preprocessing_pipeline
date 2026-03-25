@@ -4,3 +4,6 @@ crops_clahe_processed
 */__pycache__
 resultados_megadetector.json
 models/*
+Clusters/
+dataset*
+crops_clahe_processed/
