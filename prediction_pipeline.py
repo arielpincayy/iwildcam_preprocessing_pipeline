@@ -6,9 +6,11 @@ from processing.remove_footer import remove_footer
 import os
 import shutil
 
+import sys
+
 # --- CONFIGURACIÓN ---
-PATH = os.getcwd()
-SRC_IMAGES = os.path.join(PATH, 'Fotos')  # Carpeta de imágenes originales
+PATH = sys.argv[1] if len(sys.argv[1])>1 else os.getcwd()
+SRC_IMAGES = os.path.join(PATH, sys.argv[2]) if len(sys.argv[2])>2 else os.path.join(PATH, 'Fotos')  # Carpeta de imágenes originales
 IMAGES = os.path.join(PATH, 'images')
 # Carpetas intermedias
 SORTED_DIR = os.path.join(PATH, 'images_sorted')
@@ -26,20 +28,13 @@ path_animales_img = os.path.join(SORTED_DIR, ANIMALS_FOLDER)
 
 print("=== INICIANDO PIPELINE (MegaDetector -> Crop -> CLAHE -> ResNet50) ===")
 
-# 0. RECORTAR FOOTER
-remove_footer(
-    input_folder=SRC_IMAGES,
-    output_folder=IMAGES,
-    pixels_to_cut=400,
-    quality=95
-)
 # 1. MEGADETECTOR
 print("\n--- Paso 1: MegaDetector ---")
 if os.path.exists('resultados_megadetector.json'):
     print("JSON detectado. Saltando.")
 else:
     megadetector_classify(
-        input_folder=IMAGES,
+        input_folder=SRC_IMAGES,
         output_file='resultados_megadetector.json',
         model_version='MDV5A',
         conf_threshold=0.2,
@@ -50,7 +45,7 @@ else:
 print("\n--- Paso 2: Dividir ---")
 divide_images(
     json_file='resultados_megadetector.json',
-    source_folder=IMAGES,
+    source_folder=SRC_IMAGES,
     dest_root=SORTED_DIR,
     animals_folder_name=ANIMALS_FOLDER,
     empty_folder_name=EMPTY_FOLDER,
@@ -58,7 +53,6 @@ divide_images(
     accepted_categories=['1']
 )
 
-shutil.rmtree(IMAGES)
 
 # 3. MAKE CROPS
 print("\n--- Paso 3: Recortes (Crops) ---")

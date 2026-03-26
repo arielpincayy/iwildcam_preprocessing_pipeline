@@ -5,6 +5,7 @@ import umap
 import hdbscan
 from tqdm import tqdm
 import json
+from sklearn.metrics.pairwise import cosine_distances
 
 from processing.reduction_vit import extraer_features_deepfaune
 
@@ -19,11 +20,11 @@ def auto_cluster_dl_hdbscan(
     n_neighborsumap=15
 ):
     """
-    Pipeline: ResNet50 -> UMAP -> HDBSCAN -> File Sorting
+    Pipeline: ViT -> UMAP -> HDBSCAN -> File Sorting
     """
     
     # --- 1. EXTRACCIÓN (Igual que antes) ---
-    print(f"--- Paso 1: Extracción de Features con ResNet50 ---")
+    print(f"--- Paso 1: Extracción de Features con ViT ---")
     
     if not os.path.exists(temp_features_file):
         extraer_features_deepfaune(

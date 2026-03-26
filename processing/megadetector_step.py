@@ -61,7 +61,7 @@ def preprocess_resize_batch_parallel(image_paths, temp_folder, max_side=1600):
     print(f"Iniciando resize paralelo con 4 núcleos...")
 
     # ProcessPoolExecutor se encarga de distribuir el trabajo
-    with ProcessPoolExecutor(max_workers=4) as executor:
+    with ProcessPoolExecutor(max_workers=16) as executor:
         # Usamos tqdm para envolver el iterador y mostrar progreso real
         # chunksize=10 mejora el rendimiento enviando lotes de tareas en vez de 1 por 1
         results = list(tqdm(
@@ -126,7 +126,8 @@ def megadetector_classify(
         image_file_names=resized_images,
         checkpoint_path=None,
         confidence_threshold=conf_threshold,
-        quiet=False 
+        quiet=False,
+        batch_size=32
     )
 
     # --- PASO 4: Guardar Resultados ---

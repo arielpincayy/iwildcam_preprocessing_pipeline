@@ -10,3 +10,6 @@ dataset
 *.jpeg
 *.npy
 *.json
+Ecuador/
+Micronesia/
+*.out

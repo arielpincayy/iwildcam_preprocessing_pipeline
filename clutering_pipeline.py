@@ -6,10 +6,13 @@ from processing.divide import divide_images
 from processing.remove_footer import remove_footer
 import os
 import shutil
+from sklearn.metrics import silhouette_score
+import numpy as np
+import sys
 
 # --- CONFIGURACIÓN ---
-PATH = os.getcwd()
-SRC_IMAGES = os.path.join(PATH, 'dataset_ecuador')
+PATH = sys.argv[1] if len(sys.argv[1])>1 else os.getcwd()
+SRC_IMAGES = os.path.join(PATH, sys.argv[2]) if len(sys.argv[2])>2 else os.path.join(PATH, 'Fotos')  # Carpeta de imágenes originales
 IMAGES = os.path.join(PATH, 'images')
 # Carpetas intermedias
 SORTED_DIR = os.path.join(PATH, 'images_sorted')
@@ -87,10 +90,25 @@ shutil.rmtree(CROPS_RAW_DIR)
 # 5. AUTO CLUSTER (RESNET)
 print("\n--- Paso 5: Clustering con ResNet50 + UMAP ---")
 # CAMBIO: Usamos la función que integra ResNet
-auto_cluster_dl_hdbscan(
+clusterer, embedding = auto_cluster_dl_hdbscan(
     input_dir=CROPS_CLAHE_DIR,    # Usamos los crops mejorados
     output_dir=CLUSTERS_OUTPUT,
     min_cluster_size=15
 )
 
 print(f"\n¡LISTO! Revisa la carpeta: {CLUSTERS_OUTPUT}")
+
+labels = clusterer.fit_predict(embedding)
+
+# --- 3.1 MÉTRICA: SILHOUETTE (ignorando ruido) ---
+mask = labels != -1
+
+if np.sum(mask) > 1 and len(set(labels[mask])) > 1:
+    silhouette = silhouette_score(
+        embedding[mask],
+        labels[mask],
+        metric='euclidean'  # coherente con HDBSCAN en UMAP
+    )
+    print(f"Silhouette Score (sin ruido): {silhouette:.4f}")
+else:
+    print("No se puede calcular Silhouette (muy pocos clusters o puntos).")
