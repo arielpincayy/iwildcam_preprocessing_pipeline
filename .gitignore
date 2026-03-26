@@ -13,3 +13,4 @@ dataset
 Ecuador/
 Micronesia/
 *.out
+*.npy

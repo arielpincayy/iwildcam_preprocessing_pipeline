@@ -17,7 +17,8 @@ def auto_cluster_dl_hdbscan(
     batch_size=32,
     min_cluster_size=15,
     min_samples=None,
-    n_neighborsumap=15
+    n_neighborsumap=15,
+    cluster_selection_method='leaf'
 ):
     """
     Pipeline: ViT -> UMAP -> HDBSCAN -> File Sorting
@@ -69,7 +70,7 @@ def auto_cluster_dl_hdbscan(
         min_cluster_size=min_cluster_size,
         min_samples=min_samples, # Si es None, por defecto es igual a min_cluster_size
         metric='euclidean',      # En UMAP reducido, euclidiana suele ir bien
-        cluster_selection_method='leaf' # 'eom' suele hacer grupos más grandes, 'leaf' más pequeños
+        cluster_selection_method=cluster_selection_method # 'eom' suele hacer grupos más grandes, 'leaf' más pequeños
     )
     
     labels = clusterer.fit_predict(embedding)

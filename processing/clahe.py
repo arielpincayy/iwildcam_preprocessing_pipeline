@@ -64,21 +64,21 @@ def preprocess_image(img, resize_size=224, use_bilateral=True):
     print("pad → cuadrada")
     img = pad_to_square(img, pad_value=0)
 
-    # resize → tamaño uniforme para ResNet
-    print("resize → tamaño uniforme para ResNet")
+    # resize → tamaño uniforme para ViT
+    print("resize → tamaño uniforme para ViT")
     img = cv2.resize(img, (resize_size, resize_size), interpolation=cv2.INTER_LINEAR)
 
     # normalizar color (Gray World)
-    #print("normalizar color (Gray World)")
-    #img = gray_world_normalization(img)
+    print("normalizar color (Gray World)")
+    img = gray_world_normalization(img)
 
     # CLAHE
-    #print("CLAHE")
-    #img = apply_clahe(img)
+    print("CLAHE")
+    img = apply_clahe(img)
 
     # bilateral smoothing (leve)
-    #print("bilateral smoothing (leve)")
-    #img = bilateral_smooth(img, enable=use_bilateral)
+    print("bilateral smoothing (leve)")
+    img = bilateral_smooth(img, enable=use_bilateral)
 
     return img
 
